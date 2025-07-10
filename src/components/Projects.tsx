@@ -18,7 +18,7 @@ export const Projects: React.FC = () => {
       tech: ['Python', 'React', 'OpenCV', 'TensorFlow'],
       icon: <Brain className="w-6 h-6" />,
       link: 'https://genesisrecon.com.br',
-      image: 'src/assets/img/genesisrecon.png', 
+      image: '/assets/img/genesisrecon.png', 
       category: 'real',
       status: 'production'
     },
@@ -31,7 +31,7 @@ export const Projects: React.FC = () => {
       : 'Platform to monitor and manage devices running Genesis Recon (like Raspberry Pi or Arduinos), including health metrics, secure connections, location tracking, and system status.',
     tech: ['Next.js', 'MongoDB', 'Mapbox', 'TypeScript'],
     icon: <Shield className="w-6 h-6" />,
-    image: 'src/assets/img/painelrecon.png', // Substitua com o caminho real se quiser usar a screenshot enviada
+    image: '/assets/img/painelrecon.png', // Substitua com o caminho real se quiser usar a screenshot enviada
     category: 'real',
     status: 'development'
   },
