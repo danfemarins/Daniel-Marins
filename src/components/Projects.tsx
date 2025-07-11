@@ -45,7 +45,7 @@ export const Projects: React.FC = () => {
       tech: ['n8n', 'Supabase', 'React', 'Google Gemini'],
       icon: <Bot className="w-6 h-6" />,
       github: '',
-      image: 'public/assets/img/chatbot.png', // ou substitua pelo link real de imagem
+      image: '/assets/img/chatbot.png', // ou substitua pelo link real de imagem
       category: 'real',
       status: 'production'
     },
@@ -61,7 +61,7 @@ export const Projects: React.FC = () => {
   tech: ['React', 'Next.js', 'Supabase', 'n8n'],
   icon: <PcCase className="w-6 h-6" />, // substitua por um ícone apropriado
   link: 'https://portalgenesisrs.com.br',
-  image: 'public/assets/img/portalgenesisrs.png', // coloque a URL correta de capa
+  image: '/assets/img/portalgenesisrs.png', // coloque a URL correta de capa
   category: 'real',
   status: 'production'
 }
