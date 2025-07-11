@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Brain, Shield, Database, Terminal, Eye, Lock } from 'lucide-react';
+import { Github, Brain, Shield, Database, Eye, Bot, PcCase} from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useIntersectionObserver } from '../hooks/useScrollEffect';
 
@@ -36,33 +36,35 @@ export const Projects: React.FC = () => {
     status: 'development'
   },
     {
-      id: 'darkshell-logger',
-      title: 'DarkShell Logger',
-      subtitle: language === 'pt' ? 'Análise de Logs em Tempo Real' : 'Real-time Log Analysis',
-      description: language === 'pt' 
-        ? 'Parser e analisador de logs com detecção de anomalias e alertas de segurança automatizados.' 
-        : 'Log parser and analyzer with anomaly detection and automated security alerts.',
-      tech: ['Python', 'FastAPI', 'ElasticSearch', 'Docker'],
-      icon: <Terminal className="w-6 h-6" />,
-      github: 'https://github.com/danielfelipe/darkshell-logger',
-      image: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=600',
-      category: 'fictional',
-      status: 'development'
+      id: 'genesis-chatbot-ia',
+      title: 'Genesis Chatbot IA',
+      subtitle: language === 'pt' ? 'Assistente inteligente com IA e n8n' : 'Smart Assistant with AI and n8n',
+      description: language === 'pt'
+        ? 'Chatbot integrado ao WhatsApp com n8n, IA Gemini para respostas contextualizadas e banco de dados Supabase, exibido em painel React.'
+        : 'WhatsApp-integrated chatbot using n8n, Gemini AI for contextual responses, and Supabase database, displayed on a React dashboard.',
+      tech: ['n8n', 'Supabase', 'React', 'Google Gemini'],
+      icon: <Bot className="w-6 h-6" />,
+      github: '',
+      image: 'public/assets/img/chatbot.png', // ou substitua pelo link real de imagem
+      category: 'real',
+      status: 'production'
     },
-    {
-      id: 'securebridge',
-      title: 'SecureBridge',
-      subtitle: language === 'pt' ? 'Autenticação MFA com APIs' : 'MFA Authentication with APIs',
-      description: language === 'pt' 
-        ? 'Sistema de integração de autenticação multi-fator com APIs REST seguras e criptografia avançada.' 
-        : 'Multi-factor authentication integration system with secure REST APIs and advanced encryption.',
-      tech: ['Node.js', 'MongoDB', 'JWT', 'Redis'],
-      icon: <Lock className="w-6 h-6" />,
-      github: 'https://github.com/danielfelipe/securebridge',
-      image: 'https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600',
-      category: 'fictional',
-      status: 'planning'
-    }
+{
+  id: 'portalgenesisrs',
+  title: 'Portal Genesis RS',
+  subtitle: language === 'pt'
+    ? 'Solução Web de Gestão e Operações'
+    : 'Web Solution for Management and Operations',
+  description: language === 'pt'
+   ? 'Portal institucional da Genesis RS que reúne as principais soluções da empresa em um só lugar. Inclui chatbot com IA, blog com conteúdos especializados, console de APIs, vitrine de produtos e acesso a plataformas como TáPorPerto, GenesisRecon, RasterApp e RotasSeguras.'
+   : 'Genesis RS official portal that brings together the company’s main solutions in one place. Includes an AI-powered chatbot, expert content blog, API console, product showcase, and access to platforms like TáPorPerto, GenesisRecon, RasterApp, and RotasSeguras.',
+  tech: ['React', 'Next.js', 'Supabase', 'n8n'],
+  icon: <PcCase className="w-6 h-6" />, // substitua por um ícone apropriado
+  link: 'https://portalgenesisrs.com.br',
+  image: 'public/assets/img/portalgenesisrs.png', // coloque a URL correta de capa
+  category: 'real',
+  status: 'production'
+}
   ];
 
   const getStatusColor = (status: string) => {
