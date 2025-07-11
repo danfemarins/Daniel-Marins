@@ -10,24 +10,6 @@ export const About: React.FC = () => {
 
   const timelineData = [
     {
-      year: '2020–2023',
-      title: language === 'pt' ? 'Defesa Cibernética' : 'Cyber Defense',
-      company: 'Estácio',
-      description: language === 'pt' 
-        ? 'Formação acadêmica em segurança cibernética' 
-        : 'Academic training in cybersecurity',
-      status: 'completed'
-    },
-    {
-      year: '2018–2023',
-      title: language === 'pt' ? 'Analista de Sistemas' : 'Systems Analyst',
-      company: 'Embelleze',
-      description: language === 'pt' 
-        ? 'Desenvolvimento e manutenção de sistemas corporativos' 
-        : 'Development and maintenance of corporate systems',
-      status: 'completed'
-    },
-    {
       year: '2023–2024',
       title: language === 'pt' ? 'Analista Cloud' : 'Cloud Analyst',
       company: 'GPS Rotas Seguras',
@@ -37,8 +19,8 @@ export const About: React.FC = () => {
       status: 'completed'
     },
     {
-      year: '2024–Presente',
-      title: language === 'pt' ? 'Gerente de Suporte' : 'Support Manager',
+      year: '2025–Presente',
+      title: language === 'pt' ? 'Líder Técnico' : 'TechLeader',
       company: 'GPS Rotas',
       description: language === 'pt' 
         ? 'Liderança técnica e gestão de equipe' 
@@ -46,7 +28,7 @@ export const About: React.FC = () => {
       status: 'active'
     },
     {
-      year: '2024–Presente',
+      year: '2025–Presente',
       title: language === 'pt' ? 'Membro do Comitê Público' : 'Public Committee Member',
       company: 'IDCiber',
       description: language === 'pt' 
@@ -104,9 +86,11 @@ export const About: React.FC = () => {
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-orange-500/10 relative overflow-hidden">
                 {/* Card header */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
-                    <span className="text-white font-bold text-2xl">DF</span>
-                  </div>
+                <img 
+                  src="/assets/img/profile.png" 
+                  alt="Daniel Felipe" 
+                  className="w-16 h-16 rounded-xl object-cover border-2 border-orange-500 shadow-md"
+                />
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">Daniel Felipe</h3>
                     <p className="text-orange-500 font-mono text-sm">DevSecOps Specialist</p>
@@ -124,7 +108,7 @@ export const About: React.FC = () => {
                     <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">Anos</div>
                   </div>
                   <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-500">6+</div>
+                    <div className="text-2xl font-bold text-orange-500">3+</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">Anos Exp.</div>
                   </div>
                 </div>
