@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, Terminal, Shield, Code } from 'lucide-react';
+import { ChevronDown, Terminal, Shield, Code, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export const Hero: React.FC = () => {
   const { t } = useLanguage();
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [command, setCommand] = useState('whoami');
+  const [showSnake, setShowSnake] = useState(false);
   const fullText = t('hero.title');
 
   useEffect(() => {
@@ -17,6 +19,39 @@ export const Hero: React.FC = () => {
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, fullText]);
+
+  useEffect(() => {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let interval: ReturnType<typeof setInterval> | null = null;
+
+    const hackerTitle = document.querySelector(".hacker-title") as HTMLElement;
+    if (!hackerTitle) return;
+
+    const original = hackerTitle.dataset.value || "";
+    let iteration = 0;
+
+    interval = setInterval(() => {
+      hackerTitle.innerText = original
+        .split("")
+        .map((_, index) => {
+          if (index < iteration) return original[index];
+          return letters[Math.floor(Math.random() * 26)];
+        })
+        .join("");
+
+      if (iteration >= original.length) {
+        clearInterval(interval!);
+      }
+
+      iteration += 1 / 2;
+    }, 80);
+  }, []);
+
+  const handleCommandSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && command.trim().toLowerCase() === 'snake') {
+      setShowSnake(true);
+    }
+  };
 
   const scrollToProjects = () => {
     const element = document.getElementById('projects');
@@ -30,9 +65,8 @@ export const Hero: React.FC = () => {
       id="hero" 
       className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-orange-50/30 dark:from-gray-900 dark:via-black dark:to-orange-900/10"
     >
-      {/* Animated Background */}
+      {/* Background and floating elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Floating particles */}
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
@@ -45,36 +79,38 @@ export const Hero: React.FC = () => {
             }}
           />
         ))}
-        
-        {/* Grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,165,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,165,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px] dark:bg-[linear-gradient(rgba(255,165,0,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,165,0,0.05)_1px,transparent_1px)]" />
-        
-        {/* Glowing orbs */}
         <div className="absolute top-20 right-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 left-20 w-48 h-48 bg-orange-500/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
+      {/* Main content */}
       <div className="container mx-auto px-6 text-center relative z-10">
         <div className="max-w-5xl mx-auto">
-          {/* Terminal Header */}
+          {/* Terminal bar (agora com input!) */}
           <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-black/10 dark:bg-white/5 backdrop-blur-sm rounded-full border border-orange-500/20">
             <Terminal className="w-5 h-5 text-orange-500" />
             <span className="font-mono text-sm text-gray-600 dark:text-gray-400">
-              daniel@devsecops:~$ whoami
+              daniel@devsecops:~$&nbsp;
             </span>
+            <input
+              type="text"
+              value={command}
+              onChange={(e) => setCommand(e.target.value)}
+              onKeyDown={handleCommandSubmit}
+              className="bg-transparent font-mono text-sm outline-none text-gray-700 dark:text-gray-200 w-28"
+            />
           </div>
 
-          {/* Name with glitch effect */}
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 text-gray-900 dark:text-white relative">
-            <span className="relative inline-block">
-              Daniel Felipe
-              <span className="absolute inset-0 text-orange-500 opacity-20 animate-pulse">
-                Daniel Felipe
-              </span>
-            </span>
+          {/* Nome com efeito hacker */}
+          <h1
+            className="hacker-title text-6xl md:text-8xl font-bold mb-8 text-gray-900 dark:text-white"
+            data-value="DANIEL FELIPE"
+          >
+            DANIEL FELIPE
           </h1>
 
-          {/* Animated typing title */}
+          {/* Typing animated title */}
           <div className="mb-8 h-16 flex items-center justify-center">
             <div className="font-mono text-xl md:text-2xl text-orange-500 dark:text-orange-400 bg-black/5 dark:bg-white/5 px-6 py-3 rounded-lg border border-orange-500/20 backdrop-blur-sm">
               <span>{displayText}</span>
@@ -116,13 +152,32 @@ export const Hero: React.FC = () => {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="flex flex-col items-center gap-2">
           <Code className="w-6 h-6 text-orange-500" />
           <div className="w-0.5 h-8 bg-gradient-to-b from-orange-500 to-transparent" />
         </div>
       </div>
+
+      {/* Snake Game Modal */}
+      {showSnake && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
+          <div className="relative bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+            <button
+              onClick={() => setShowSnake(false)}
+              className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-xl font-bold text-center mb-4 text-gray-900 dark:text-white">🐍 Snake Game</h2>
+            <iframe
+              src="/snake.html"
+              className="w-[320px] h-[400px] md:w-[600px] md:h-[600px] border-2 border-orange-500 rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };

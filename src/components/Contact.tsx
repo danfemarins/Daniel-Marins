@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Github, Linkedin, MessageCircle, Send, Terminal, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useIntersectionObserver } from '../hooks/useScrollEffect';
+import emailjs from '@emailjs/browser';
 
 export const Contact: React.FC = () => {
   const { t } = useLanguage();
@@ -9,27 +10,44 @@ export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '', 
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  try {
+    const result = await emailjs.send(
+      'service_rr48yuh',      // substitua pelo ID do seu serviço
+      'template_4zw9ivt',     // substitua pelo ID do seu template
+      {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      },
+      '0mv7OWBu9C9aVqwUQ'        // substitua pelo seu public key
+    );
+
+    console.log('Email enviado:', result.text);
     setIsSubmitted(true);
-    
-    // Reset form after success message
+    setFormData({ name: '', email: '', subject: '', 
+ message: '' });
+
     setTimeout(() => {
-      setFormData({ name: '', email: '', message: '' });
       setIsSubmitted(false);
     }, 3000);
-  };
+  } catch (error) {
+    console.error('Erro ao enviar:', error);
+    alert("Erro ao enviar. Tente novamente mais tarde.");
+  }
+
+  setIsSubmitting(false);
+};
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -87,7 +105,10 @@ export const Contact: React.FC = () => {
               </div>
               
               <div className="space-y-6">
-                <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-300 group">
+                <a
+                  href="mailto:danielfelipemarins@gmail.com"
+                  className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-300 group"
+                >
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
                     <Mail className="w-6 h-6" />
                   </div>
@@ -95,9 +116,14 @@ export const Contact: React.FC = () => {
                     <p className="font-mono font-medium text-gray-900 dark:text-white">Email</p>
                     <p className="text-gray-600 dark:text-gray-300 text-sm">danielfelipemarins@gmail.com</p>
                   </div>
-                </div>
+                </a>
 
-                <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-300 group">
+                <a
+                  href="https://wa.me/5521981905306?text=Olá%20Daniel%2C%20Estou%20interessado%20em%20conversar%20com%20você%20sobre%20seus%20serviços."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors duration-300 group"
+                >
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
                     <MessageCircle className="w-6 h-6" />
                   </div>
@@ -105,7 +131,7 @@ export const Contact: React.FC = () => {
                     <p className="font-mono font-medium text-gray-900 dark:text-white">WhatsApp</p>
                     <p className="text-gray-600 dark:text-gray-300 text-sm">+55 (21) 98190-5306</p>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
 
@@ -153,38 +179,54 @@ export const Contact: React.FC = () => {
             <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 space-y-6">
               {!isSubmitted ? (
                 <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-mono font-medium text-gray-900 dark:text-white mb-2">
+                        {t('contact.name')}
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Digite seu nome..."
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-mono font-medium text-gray-900 dark:text-white mb-2">
+                        {t('contact.email')}
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="seu@email.com"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white font-mono"
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label htmlFor="name" className="block text-sm font-mono font-medium text-gray-900 dark:text-white mb-2">
-                      {t('contact.name')}
+                    <label htmlFor="subject" className="block text-sm font-mono font-medium text-gray-900 dark:text-white mb-2">
+                      Assunto
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
                       onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white font-mono"
-                      placeholder="Digite seu nome..."
+                      placeholder="Sobre o que deseja falar?"
                     />
                   </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-mono font-medium text-gray-900 dark:text-white mb-2">
-                      {t('contact.email')}
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white font-mono"
-                      placeholder="seu@email.com"
-                    />
-                  </div>
-
                   <div>
                     <label htmlFor="message" className="block text-sm font-mono font-medium text-gray-900 dark:text-white mb-2">
                       {t('contact.message')}

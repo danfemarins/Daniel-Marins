@@ -18,7 +18,7 @@ export const useScrollEffect = () => {
   return { scrollY, isScrolled };
 };
 
-export const useIntersectionObserver = (threshold = 0.1) => {
+export const useIntersectionObserver = (threshold = 0.5) => {
   const [isVisible, setIsVisible] = useState(false);
   const [elementRef, setElementRef] = useState<HTMLElement | null>(null);
 
@@ -27,7 +27,10 @@ export const useIntersectionObserver = (threshold = 0.1) => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect(); // Ativa apenas uma vez
+        }
       },
       { threshold }
     );

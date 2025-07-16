@@ -10,7 +10,7 @@ export const Projects: React.FC = () => {
   const projects = [
     {
       id: 'weapon-detection',
-      title: language === 'pt' ? 'Genesis Recon' : 'Genesis RS Technology',
+      title: language === 'pt' ? 'Genesis Recon' : 'Genesis Recon',
       subtitle: language === 'pt' ? 'Reconhecimento de Armas com IA' : 'AI Weapon Detection',
       description: language === 'pt' 
         ? 'Sistema de IA em tempo real para detectar armas em vídeo, desenvolvido para segurança urbana e monitoramento inteligente.' 
@@ -20,7 +20,9 @@ export const Projects: React.FC = () => {
       link: 'https://genesisrecon.com.br',
       image: '/assets/img/genesisrecon.png', 
       category: 'real',
-      status: 'production'
+      status: 'production',
+      company: 'Genesis R S Ltda' 
+
     },
   {
     id: 'painel-recon',
@@ -33,7 +35,8 @@ export const Projects: React.FC = () => {
     icon: <Shield className="w-6 h-6" />,
     image: '/assets/img/painelrecon.png', // Substitua com o caminho real se quiser usar a screenshot enviada
     category: 'real',
-    status: 'development'
+    status: 'development',
+    company: 'Genesis R S Ltda'
   },
     {
       id: 'genesis-chatbot-ia',
@@ -47,7 +50,8 @@ export const Projects: React.FC = () => {
       github: '',
       image: '/assets/img/chatbot.png', // ou substitua pelo link real de imagem
       category: 'real',
-      status: 'production'
+      status: 'production',
+      company: 'Genesis R S Ltda'
     },
 {
   id: 'portalgenesisrs',
@@ -63,7 +67,8 @@ export const Projects: React.FC = () => {
   link: 'https://portalgenesisrs.com.br',
   image: '/assets/img/portalgenesisrs.png', // coloque a URL correta de capa
   category: 'real',
-  status: 'production'
+  status: 'production',
+  company: 'Genesis R S Ltda'
 }
   ];
 
@@ -158,6 +163,7 @@ export const Projects: React.FC = () => {
                 <div className="absolute inset-0 bg-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
 
+
               {/* Project Content */}
               <div className="p-6">
                 <div className="mb-4">
@@ -172,6 +178,7 @@ export const Projects: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed text-sm">
                   {project.description}
                 </p>
+
 
                 {/* Tech Stack */}
                 <div className="flex flex-wrap gap-2 mb-6">

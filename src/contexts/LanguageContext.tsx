@@ -40,7 +40,7 @@ const translations = {
     projects: {
       title: 'Projetos Ativos',
       subtitle: 'Sistemas em Produção',
-      viewProject: 'Acessar Sistema',
+      viewProject: 'Acessar Site',
       viewCode: 'Ver Código'
     },
     services: {
