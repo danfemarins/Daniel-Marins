@@ -1,74 +1,100 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useScrollEffect } from '../hooks/useScrollEffect';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
-import { Terminal } from 'lucide-react';
+import { Terminal, Menu, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { isScrolled } = useScrollEffect();
   const { t } = useLanguage();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+    setMenuOpen(false);
   };
 
+  const navItems = [
+    { key: 'home', id: 'hero' },
+    { key: 'about', id: 'about' },
+    { key: 'projects', id: 'projects' },
+    { key: 'services', id: 'services' },
+    { key: 'contact', id: 'contact' }
+  ];
+
   return (
-    <header 
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-black/10 dark:bg-black/20 backdrop-blur-xl border-b border-orange-500/20' 
+    <header
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'glass shadow-lg shadow-black/20'
           : 'bg-transparent'
       }`}
     >
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <div className="relative">
-              <Terminal className="w-8 h-8 text-orange-500 group-hover:text-orange-400 transition-colors duration-300" />
-              <div className="absolute inset-0 w-8 h-8 bg-orange-500/20 rounded blur-sm group-hover:bg-orange-400/30 transition-all duration-300" />
-            </div>
+          <button
+            onClick={() => scrollToSection('hero')}
+            className="flex items-center gap-3 group"
+          >
+            <Terminal className="w-7 h-7 text-amber-500 group-hover:text-amber-400 transition-colors" />
             <div className="flex flex-col">
-              <span className="text-xl font-mono font-bold text-gray-900 dark:text-white group-hover:text-orange-500 transition-colors duration-300">
+              <span className="text-lg font-bold text-white group-hover:text-amber-500 transition-colors leading-tight">
                 Daniel Felipe
               </span>
-              <span className="text-xs font-mono text-orange-500/70 group-hover:text-orange-400 transition-colors duration-300">
-                root@devsecops:~$
+              <span className="text-[10px] font-mono text-amber-500/60 leading-tight">
+                DevSecOps Specialist
               </span>
             </div>
-          </div>
+          </button>
 
-          {/* Navigation Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {[
-              { key: 'home', id: 'hero' },
-              { key: 'about', id: 'about' },
-              { key: 'projects', id: 'projects' },
-              { key: 'services', id: 'services' },
-              { key: 'contact', id: 'contact' }
-            ].map(({ key, id }) => (
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-1">
+            {navItems.map(({ key, id }) => (
               <button
                 key={key}
                 onClick={() => scrollToSection(id)}
-                className="relative group px-4 py-2 font-mono text-sm text-gray-700 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-all duration-300"
+                className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-amber-500 transition-colors rounded-lg hover:bg-white/5"
               >
-                <span className="relative z-10">{t(`nav.${key}`)}</span>
-                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-400 group-hover:w-full transition-all duration-300" />
-                <div className="absolute inset-0 bg-orange-500/5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {t(`nav.${key}`)}
               </button>
             ))}
           </div>
 
-          {/* Theme and Language Controls */}
-          <div className="flex items-center space-x-3">
+          {/* Controls */}
+          <div className="flex items-center gap-2">
             <ThemeToggle />
             <LanguageToggle />
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden p-2 text-gray-400 hover:text-amber-500 transition-colors"
+              aria-label="Menu"
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-white/10 pt-4 animate-fade-in-up">
+            <div className="flex flex-col gap-1">
+              {navItems.map(({ key, id }) => (
+                <button
+                  key={key}
+                  onClick={() => scrollToSection(id)}
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-colors"
+                >
+                  {t(`nav.${key}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

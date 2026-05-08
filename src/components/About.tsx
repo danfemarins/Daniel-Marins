@@ -1,20 +1,19 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useIntersectionObserver } from '../hooks/useScrollEffect';
-import { User, Calendar, MapPin, Award } from 'lucide-react';
+import { MapPin, Calendar } from 'lucide-react';
 
 export const About: React.FC = () => {
   const { t, language } = useLanguage();
-  const { isVisible: isVisibleTop, elementRef: elementRefTop } = useIntersectionObserver();
-  const { isVisible: isVisibleTimeline, elementRef: elementRefTimeline } = useIntersectionObserver();
+  const { isVisible, elementRef } = useIntersectionObserver(0.2);
 
   const timelineData = [
     {
       year: '2023–2024',
       title: language === 'pt' ? 'Analista Cloud' : 'Cloud Analyst',
       company: 'GPS Rotas Seguras',
-      description: language === 'pt' 
-        ? 'Gestão de infraestrutura cloud e automação' 
+      description: language === 'pt'
+        ? 'Gestão de infraestrutura cloud e automação'
         : 'Cloud infrastructure management and automation',
       status: 'completed'
     },
@@ -22,8 +21,8 @@ export const About: React.FC = () => {
       year: '2025–Presente',
       title: language === 'pt' ? 'Líder Técnico' : 'TechLeader',
       company: 'GPS Rotas',
-      description: language === 'pt' 
-        ? 'Liderança técnica e gestão de equipe' 
+      description: language === 'pt'
+        ? 'Liderança técnica e gestão de equipe'
         : 'Technical leadership and team management',
       status: 'active'
     },
@@ -31,184 +30,159 @@ export const About: React.FC = () => {
       year: '2025–Presente',
       title: language === 'pt' ? 'Membro do Comitê Público' : 'Public Committee Member',
       company: 'IDCiber',
-      description: language === 'pt' 
-        ? 'Contribuição para políticas de segurança cibernética' 
+      description: language === 'pt'
+        ? 'Contribuição para políticas de segurança cibernética'
         : 'Contributing to cybersecurity policies',
       status: 'active'
     }
   ];
 
-  return (
-    <section 
-      id="about" 
-      className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300 relative overflow-hidden"
-    >
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,165,0,0.05),transparent_50%)]" />
-      </div>
+  const stats = [
+    { value: '29', label: 'Anos' },
+    { value: '2+', label: 'Anos Exp.' },
+    { value: '20+', label: 'Tecnologias' },
+    { value: '4', label: 'Projetos' }
+  ];
 
-      <div className="container mx-auto px-6 relative z-10">
+  const skills = [
+    { skill: 'Security', level: 95 },
+    { skill: 'DevOps', level: 90 },
+    { skill: 'Python', level: 88 },
+    { skill: 'React', level: 85 }
+  ];
+
+  return (
+    <section id="about" className="section-padding bg-gray-950 relative">
+      <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
-          <div 
-            ref={elementRefTop}
-            className={`text-center mb-16 transition-all duration-1000 ${
-              isVisibleTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          {/* Section Header */}
+          <div
+            ref={elementRef}
+            className={`text-center mb-16 transition-all duration-700 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* Terminal-style header */}
-            <div className="inline-flex items-center gap-3 mb-6 px-6 py-3 bg-black/10 dark:bg-white/5 backdrop-blur-sm rounded-lg border border-orange-500/20">
-              <User className="w-5 h-5 text-orange-500" />
-              <span className="font-mono text-sm text-gray-600 dark:text-gray-400">
-                cat /etc/profile.d/daniel_felipe.sh
-              </span>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+            <p className="font-mono text-sm text-amber-500/70 mb-3 tracking-wider uppercase">
+              cat /etc/profile.d/about.sh
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {t('about.title')}
             </h2>
-            <p className="text-lg text-orange-500 dark:text-orange-400 font-mono mb-8">
-              {t('about.subtitle')}
+            <p className="text-amber-500 font-mono">{t('about.subtitle')}</p>
+          </div>
+
+          {/* Description */}
+          <div className={`max-w-3xl mx-auto mb-16 transition-all duration-700 delay-100 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            <p className="text-lg text-gray-300 leading-relaxed text-center bg-white/[0.02] p-6 rounded-xl border border-white/5">
+              {t('about.description')}
             </p>
-            <div className="max-w-4xl mx-auto">
-              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed bg-black/5 dark:bg-white/5 p-6 rounded-lg border border-orange-500/10">
-                {t('about.description')}
-              </p>
-            </div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Profile Card */}
-              <div className={`transition-all duration-1000 delay-200 ${
-                isVisibleTimeline ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
-              }`}>
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-orange-500/10 relative overflow-hidden">
-                {/* Card header */}
-                <div className="flex items-center gap-4 mb-6">
-                <img 
-                  src="/assets/img/profile.jpeg" 
-                  alt="Daniel Felipe" 
-                  className="w-16 h-16 rounded-xl object-cover border-2 border-orange-500 shadow-md"
-                />
+            <div className={`transition-all duration-700 delay-200 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
+              <div className="bg-gray-900/50 rounded-2xl p-8 border border-white/5 hover:border-amber-500/20 transition-colors">
+                {/* Profile header */}
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="relative">
+                    <img
+                      src="/assets/img/profile.jpeg"
+                      alt="Daniel Felipe - DevSecOps Specialist"
+                      className="w-16 h-16 rounded-full object-cover ring-2 ring-amber-500/50"
+                      loading="lazy"
+                    />
+                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-gray-900" />
+                  </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Daniel Felipe</h3>
-                    <p className="text-orange-500 font-mono text-sm">DevSecOps Specialist</p>
-                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 gap-1 font-mono mt-1">
-                      <MapPin className="w-4 h-4 text-orange-500" />
-                      Rio de Janeiro, Brasil
+                    <h3 className="text-xl font-bold text-white">Daniel Felipe</h3>
+                    <p className="text-amber-500 font-mono text-sm">DevSecOps Specialist</p>
+                    <div className="flex items-center gap-1 text-xs text-gray-500 font-mono mt-1">
+                      <MapPin className="w-3 h-3" />
+                      Rio de Janeiro, BR
                     </div>
                   </div>
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-500">29</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">Anos</div>
-                  </div>
-                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-500">2+</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">Anos Exp.</div>
-                  </div>
+                {/* Stats grid */}
+                <div className="grid grid-cols-4 gap-3 mb-8">
+                  {stats.map((stat) => (
+                    <div key={stat.label} className="text-center p-3 bg-white/[0.03] rounded-xl">
+                      <div className="text-xl font-bold text-amber-500">{stat.value}</div>
+                      <div className="text-[11px] text-gray-500 font-mono mt-1">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
 
-                {/* Skills indicators */}
-                <div className="space-y-3">
-                  {[
-                    { skill: 'Security', level: 95 },
-                    { skill: 'DevOps', level: 90 },
-                    { skill: 'Python', level: 88 },
-                    { skill: 'React', level: 85 }
-                  ].map((item, index) => (
-                    <div key={item.skill} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="font-mono text-gray-700 dark:text-gray-300">{item.skill}</span>
-                        <span className="font-mono text-orange-500">{item.level}%</span>
+                {/* Skills */}
+                <div className="space-y-4">
+                  {skills.map((item, index) => (
+                    <div key={item.skill}>
+                      <div className="flex justify-between text-sm mb-1.5">
+                        <span className="text-gray-300 font-medium">{item.skill}</span>
+                        <span className="font-mono text-amber-500 text-xs">{item.level}%</span>
                       </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-1000 ease-out"
-                          style={{ 
-                            width: isVisibleTimeline ? `${item.level}%` : '0%',
-                            transitionDelay: `${600 + index * 100}ms`
+                      <div className="w-full bg-white/5 rounded-full h-1.5">
+                        <div
+                          className="bg-gradient-to-r from-amber-500 to-amber-400 h-1.5 rounded-full transition-all duration-1000 ease-out"
+                          style={{
+                            width: isVisible ? `${item.level}%` : '0%',
+                            transitionDelay: `${400 + index * 100}ms`
                           }}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
-
-                {/* Decorative elements */}
-                <div className="absolute top-4 right-4 w-8 h-8 border-2 border-orange-500/20 rounded rotate-45" />
-                <div className="absolute bottom-4 left-4 w-6 h-6 bg-orange-500/10 rounded-full" />
               </div>
             </div>
 
             {/* Timeline */}
-            <div 
-              ref={elementRefTimeline}
-              className={`transition-all duration-1000 delay-400 ${
-                isVisibleTimeline ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-              }`}
-            >
+            <div className={`transition-all duration-700 delay-300 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
               <div className="flex items-center gap-3 mb-8">
-                <Calendar className="w-6 h-6 text-orange-500" />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {t('about.timeline')}
-                </h3>
+                <Calendar className="w-5 h-5 text-amber-500" />
+                <h3 className="text-xl font-bold text-white">{t('about.timeline')}</h3>
               </div>
-              
-              <div className="relative">
-                {/* Timeline Line */}
-                <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-orange-500 via-orange-500/50 to-transparent" />
-                
+
+              <div className="relative pl-8 space-y-8">
+                {/* Timeline line */}
+                <div className="absolute left-3 top-2 bottom-2 w-px bg-gradient-to-b from-amber-500 via-amber-500/30 to-transparent" />
+
                 {timelineData.map((item, index) => (
-                  <div 
-                    key={index}
-                    className={`relative flex items-start mb-8 transition-all duration-500 ${
-                      isVisibleTimeline ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                    }`}
-                  >
-                    {/* Timeline Dot */}
-                    <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center mr-6 flex-shrink-0 ${
-                      item.status === 'active' 
-                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 animate-pulse' 
-                        : 'bg-gray-400 dark:bg-gray-600'
-                    }`}>
-                      {item.status === 'active' ? (
-                        <div className="w-4 h-4 bg-white rounded-full animate-pulse" />
-                      ) : (
-                        <Award className="w-5 h-5 text-white" />
-                      )}
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-orange-500/10 hover:border-orange-500/30 transition-all duration-300 group">
+                  <div key={index} className="relative">
+                    {/* Dot */}
+                    <div className={`absolute -left-5 top-1 w-4 h-4 rounded-full border-2 ${
+                      item.status === 'active'
+                        ? 'bg-amber-500 border-amber-400 shadow-lg shadow-amber-500/30'
+                        : 'bg-gray-700 border-gray-600'
+                    }`} />
+
+                    <div className="bg-gray-900/50 rounded-xl p-5 border border-white/5 hover:border-amber-500/20 transition-colors group">
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`text-sm font-mono px-3 py-1 rounded-full ${
-                          item.status === 'active' 
-                            ? 'text-orange-500 bg-orange-100 dark:bg-orange-900/30' 
-                            : 'text-gray-500 bg-gray-100 dark:bg-gray-700'
+                        <span className={`text-xs font-mono px-2.5 py-1 rounded-full ${
+                          item.status === 'active'
+                            ? 'text-amber-500 bg-amber-500/10'
+                            : 'text-gray-500 bg-white/5'
                         }`}>
                           {item.year}
                         </span>
                         {item.status === 'active' && (
-                          <div className="flex items-center gap-1">
-                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                            <span className="text-xs font-mono text-green-500">ATIVO</span>
+                          <div className="flex items-center gap-1.5">
+                            <div className="status-dot" style={{ width: '6px', height: '6px' }} />
+                            <span className="text-[10px] font-mono text-emerald-500">ATIVO</span>
                           </div>
                         )}
                       </div>
-                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-orange-500 transition-colors duration-300">
+                      <h4 className="text-base font-semibold text-white group-hover:text-amber-500 transition-colors mb-0.5">
                         {item.title}
                       </h4>
-                      <p className="text-orange-600 dark:text-orange-400 font-medium mb-2 font-mono text-sm">
-                        {item.company}
-                      </p>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm">
-                        {item.description}
-                      </p>
+                      <p className="text-amber-500/70 font-mono text-xs mb-1.5">{item.company}</p>
+                      <p className="text-gray-400 text-sm">{item.description}</p>
                     </div>
                   </div>
                 ))}

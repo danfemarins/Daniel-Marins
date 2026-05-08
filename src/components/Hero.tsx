@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, Terminal, Shield, Code, X } from 'lucide-react';
+import { ChevronDown, Shield, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export const Hero: React.FC = () => {
@@ -15,37 +15,10 @@ export const Hero: React.FC = () => {
       const timeout = setTimeout(() => {
         setDisplayText(prev => prev + fullText[currentIndex]);
         setCurrentIndex(prev => prev + 1);
-      }, 50);
+      }, 45);
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, fullText]);
-
-  useEffect(() => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let interval: ReturnType<typeof setInterval> | null = null;
-
-    const hackerTitle = document.querySelector(".hacker-title") as HTMLElement;
-    if (!hackerTitle) return;
-
-    const original = hackerTitle.dataset.value || "";
-    let iteration = 0;
-
-    interval = setInterval(() => {
-      hackerTitle.innerText = original
-        .split("")
-        .map((_, index) => {
-          if (index < iteration) return original[index];
-          return letters[Math.floor(Math.random() * 26)];
-        })
-        .join("");
-
-      if (iteration >= original.length) {
-        clearInterval(interval!);
-      }
-
-      iteration += 1 / 2;
-    }, 80);
-  }, []);
 
   const handleCommandSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && command.trim().toLowerCase() === 'snake') {
@@ -54,126 +27,109 @@ export const Hero: React.FC = () => {
   };
 
   const scrollToProjects = () => {
-    const element = document.getElementById('projects');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <section 
-      id="hero" 
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-orange-50/30 dark:from-gray-900 dark:via-black dark:to-orange-900/10"
+    <section
+      id="hero"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black"
     >
-      {/* Background and floating elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-orange-500/30 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,165,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,165,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px] dark:bg-[linear-gradient(rgba(255,165,0,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,165,0,0.05)_1px,transparent_1px)]" />
-        <div className="absolute top-20 right-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-48 h-48 bg-orange-500/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-      {/* Main content */}
+      {/* Gradient orbs */}
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-amber-500/3 rounded-full blur-[100px]" />
+
+      {/* Content */}
       <div className="container mx-auto px-6 text-center relative z-10">
-        <div className="max-w-5xl mx-auto">
-          {/* Terminal bar (agora com input!) */}
-          <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-black/10 dark:bg-white/5 backdrop-blur-sm rounded-full border border-orange-500/20">
-            <Terminal className="w-5 h-5 text-orange-500" />
-            <span className="font-mono text-sm text-gray-600 dark:text-gray-400">
-              daniel@devsecops:~$&nbsp;
-            </span>
+        <div className="max-w-4xl mx-auto">
+          {/* Terminal prompt */}
+          <div className="inline-flex items-center gap-2 mb-10 px-5 py-2.5 glass rounded-full">
+            <span className="font-mono text-sm text-gray-500">daniel@devsecops:~$</span>
             <input
               type="text"
               value={command}
               onChange={(e) => setCommand(e.target.value)}
               onKeyDown={handleCommandSubmit}
-              className="bg-transparent font-mono text-sm outline-none text-gray-700 dark:text-gray-200 w-28"
+              className="bg-transparent font-mono text-sm outline-none text-gray-300 w-24"
+              aria-label="Terminal command"
             />
           </div>
 
-          {/* Nome com efeito hacker */}
-          <h1
-            className="hacker-title text-6xl md:text-8xl font-bold mb-8 text-gray-900 dark:text-white"
-            data-value="DANIEL FELIPE"
-          >
-            DANIEL FELIPE
+          {/* Name */}
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight mb-6">
+            <span className="text-white">DANIEL</span>{' '}
+            <span className="gradient-text">FELIPE</span>
           </h1>
 
-          {/* Typing animated title */}
-          <div className="mb-8 h-16 flex items-center justify-center">
-            <div className="font-mono text-xl md:text-2xl text-orange-500 dark:text-orange-400 bg-black/5 dark:bg-white/5 px-6 py-3 rounded-lg border border-orange-500/20 backdrop-blur-sm">
+          {/* Typing subtitle */}
+          <div className="mb-8 flex justify-center">
+            <div className="font-mono text-base sm:text-lg md:text-xl text-amber-500/80 px-5 py-2.5 rounded-lg border border-amber-500/10 bg-white/[0.02] max-w-full overflow-hidden">
               <span>{displayText}</span>
-              <span className="animate-pulse">|</span>
+              <span className="animate-blink" />
             </div>
           </div>
 
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+          {/* Description */}
+          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
             {t('hero.subtitle')}
           </p>
 
-          {/* CTA Button */}
+          {/* CTA */}
           <button
             onClick={scrollToProjects}
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-mono font-semibold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/25"
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl hover:from-amber-400 hover:to-amber-500 transition-all duration-300 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 hover:-translate-y-0.5"
           >
-            <Shield className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+            <Shield className="w-5 h-5" />
             <span>{t('hero.cta')}</span>
-            <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
-            <div className="absolute inset-0 rounded-lg bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <ChevronDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
           </button>
 
-          {/* Status indicators */}
-          <div className="flex justify-center items-center space-x-8 mt-16">
-            <div className="flex items-center gap-2 text-sm font-mono text-gray-500 dark:text-gray-400">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span>System Online</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm font-mono text-gray-500 dark:text-gray-400">
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-              <span>Security Active</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm font-mono text-gray-500 dark:text-gray-400">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-              <span>Ready for Connection</span>
-            </div>
+          {/* Status bar */}
+          <div className="flex flex-wrap justify-center items-center gap-6 mt-16">
+            {[
+              { label: 'System Online', color: 'bg-emerald-500' },
+              { label: 'Security Active', color: 'bg-amber-500' },
+              { label: 'Ready for Connection', color: 'bg-sky-500' }
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-2 text-xs font-mono text-gray-500">
+                <div className={`w-1.5 h-1.5 ${item.color} rounded-full animate-subtle-pulse`} />
+                <span>{item.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="flex flex-col items-center gap-2">
-          <Code className="w-6 h-6 text-orange-500" />
-          <div className="w-0.5 h-8 bg-gradient-to-b from-orange-500 to-transparent" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+        <div className="w-5 h-9 rounded-full border-2 border-amber-500/30 flex justify-center pt-2">
+          <div className="w-1 h-2.5 bg-amber-500/50 rounded-full animate-bounce" />
         </div>
       </div>
 
-      {/* Snake Game Modal */}
+      {/* Snake Game Modal — fullscreen on mobile */}
       {showSnake && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
-          <div className="relative bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-            <button
-              onClick={() => setShowSnake(false)}
-              className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <h2 className="text-xl font-bold text-center mb-4 text-gray-900 dark:text-white">🐍 Snake Game</h2>
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setShowSnake(false)}>
+          <div
+            className="relative bg-gray-900 rounded-2xl shadow-2xl border border-amber-500/20 w-full max-w-2xl max-h-[90vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
+              <h2 className="text-lg font-bold text-white font-mono">🐍 Snake Game</h2>
+              <button
+                onClick={() => setShowSnake(false)}
+                className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-white/5 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
             <iframe
               src="/snake.html"
-              className="w-[320px] h-[400px] md:w-[600px] md:h-[600px] border-2 border-orange-500 rounded-lg"
+              title="Snake Game"
+              className="w-full h-[75vh] md:h-[70vh] border-0"
             />
           </div>
         </div>
