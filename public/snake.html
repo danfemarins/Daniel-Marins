@@ -46,6 +46,65 @@
       cursor: pointer;
       display: none;
     }
+
+    /* D-Pad */
+    .dpad {
+      display: none;
+      margin-top: 20px;
+      position: relative;
+      width: 160px;
+      height: 160px;
+    }
+
+    .dpad-btn {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      background: #1e293b;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      color: #facc15;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .dpad-btn:active {
+      background: #f59e0b;
+      color: #111;
+      transform: scale(0.92);
+    }
+
+    .dpad-up    { top: 0;    left: 50%;  transform: translateX(-50%); }
+    .dpad-down  { bottom: 0; left: 50%;  transform: translateX(-50%); }
+    .dpad-left  { left: 0;   top: 50%;   transform: translateY(-50%); }
+    .dpad-right { right: 0;  top: 50%;   transform: translateY(-50%); }
+
+    .dpad-up:active    { transform: translateX(-50%) scale(0.92); }
+    .dpad-down:active  { transform: translateX(-50%) scale(0.92); }
+    .dpad-left:active  { transform: translateY(-50%) scale(0.92); }
+    .dpad-right:active { transform: translateY(-50%) scale(0.92); }
+
+    .dpad-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 28px;
+      height: 28px;
+      background: #f59e0b33;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 767px) {
+      .dpad { display: block; }
+      h1 { font-size: 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -57,6 +116,7 @@
   canvas {
     width: 300px;
     height: 300px;
+    touch-action: none;
   }
 
   @media (min-width: 768px) {
@@ -67,6 +127,15 @@
   }
 </style>
   <button id="restartBtn" onclick="restartGame()">Reiniciar</button>
+
+  <!-- D-Pad mobile -->
+  <div class="dpad" id="dpad">
+    <div class="dpad-btn dpad-up"    id="btn-up">▲</div>
+    <div class="dpad-btn dpad-left"  id="btn-left">◀</div>
+    <div class="dpad-center"></div>
+    <div class="dpad-btn dpad-right" id="btn-right">▶</div>
+    <div class="dpad-btn dpad-down"  id="btn-down">▼</div>
+  </div>
 
   <script>
     const canvas = document.getElementById("game");
@@ -166,21 +235,54 @@
       requestAnimationFrame(loop);
     }
 
+    // --- Direção helper ---
+    function setDirection(dir) {
+      if (dir === 'left'  && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
+      if (dir === 'up'    && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
+      if (dir === 'right' && snake.dx === 0) { snake.dx = grid;  snake.dy = 0; }
+      if (dir === 'down'  && snake.dy === 0) { snake.dy = grid;  snake.dx = 0; }
+    }
+
+    // --- Keyboard ---
     document.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft" && snake.dx === 0) {
-        snake.dx = -grid;
-        snake.dy = 0;
-      } else if (e.key === "ArrowUp" && snake.dy === 0) {
-        snake.dy = -grid;
-        snake.dx = 0;
-      } else if (e.key === "ArrowRight" && snake.dx === 0) {
-        snake.dx = grid;
-        snake.dy = 0;
-      } else if (e.key === "ArrowDown" && snake.dy === 0) {
-        snake.dy = grid;
-        snake.dx = 0;
-      }
+      if (e.key === "ArrowLeft")  setDirection('left');
+      if (e.key === "ArrowUp")    setDirection('up');
+      if (e.key === "ArrowRight") setDirection('right');
+      if (e.key === "ArrowDown")  setDirection('down');
     });
+
+    // --- D-Pad buttons ---
+    document.getElementById("btn-up").addEventListener("touchstart",    (e) => { e.preventDefault(); setDirection('up');    }, { passive: false });
+    document.getElementById("btn-down").addEventListener("touchstart",  (e) => { e.preventDefault(); setDirection('down');  }, { passive: false });
+    document.getElementById("btn-left").addEventListener("touchstart",  (e) => { e.preventDefault(); setDirection('left');  }, { passive: false });
+    document.getElementById("btn-right").addEventListener("touchstart", (e) => { e.preventDefault(); setDirection('right'); }, { passive: false });
+
+    // --- Swipe on canvas ---
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    canvas.addEventListener("touchstart", function (e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", function (e) {
+      e.preventDefault();
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+
+      // Minimum swipe distance of 20px
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setDirection(dx > 0 ? 'right' : 'left');
+      } else {
+        setDirection(dy > 0 ? 'down' : 'up');
+      }
+    }, { passive: false });
 
     resetGame();
     requestAnimationFrame(loop);
