@@ -87,7 +87,7 @@ export const About: React.FC = () => {
                 {/* Card header */}
                 <div className="flex items-center gap-4 mb-6">
                 <img 
-                  src="/assets/img/profile.png" 
+                  src="/assets/img/profile.jpeg" 
                   alt="Daniel Felipe" 
                   className="w-16 h-16 rounded-xl object-cover border-2 border-orange-500 shadow-md"
                 />
