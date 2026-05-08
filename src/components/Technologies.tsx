@@ -172,7 +172,7 @@ export const Technologies: React.FC = () => {
             </div>
             <div className="w-px h-8 bg-orange-500/30" />
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-500">6+</div>
+              <div className="text-2xl font-bold text-orange-500">2+</div>
               <div className="text-sm font-mono text-gray-600 dark:text-gray-400">Anos Exp.</div>
             </div>
             <div className="w-px h-8 bg-orange-500/30" />

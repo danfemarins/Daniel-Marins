@@ -34,7 +34,7 @@ const translations = {
     about: {
       title: 'Perfil Digital',
       subtitle: 'Identidade Cibernética',
-      description: 'Sou Daniel Felipe, 28 anos, formado em Defesa Cibernética. Atuo com segurança ofensiva e defensiva, DevOps, automação, redes e análise de vulnerabilidades. Domino React, Python, TypeScript, Linux, Azure e CI/CD.',
+      description: 'Sou Daniel Felipe, 29 anos, formado em Defesa Cibernética. Atuo com segurança ofensiva e defensiva, DevOps, automação, redes e análise de vulnerabilidades. Domino React, Python, TypeScript, Linux, Azure e CI/CD.',
       timeline: 'Histórico de Acesso'
     },
     projects: {
@@ -89,7 +89,7 @@ const translations = {
     about: {
       title: 'Digital Profile',
       subtitle: 'Cyber Identity',
-      description: "I'm Daniel Felipe, 28, Cyber Defense graduate. I work with offensive and defensive security, automation, infrastructure, and vulnerability analysis. Skilled in React, Python, TypeScript, Linux, CI/CD and cloud systems.",
+      description: "I'm Daniel Felipe, 29, Cyber Defense graduate. I work with offensive and defensive security, automation, infrastructure, and vulnerability analysis. Skilled in React, Python, TypeScript, Linux, CI/CD and cloud systems.",
       timeline: 'Access History'
     },
     projects: {

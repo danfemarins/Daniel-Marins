@@ -104,11 +104,11 @@ export const About: React.FC = () => {
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-500">28</div>
+                    <div className="text-2xl font-bold text-orange-500">29</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">Anos</div>
                   </div>
                   <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-500">3+</div>
+                    <div className="text-2xl font-bold text-orange-500">2+</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">Anos Exp.</div>
                   </div>
                 </div>
