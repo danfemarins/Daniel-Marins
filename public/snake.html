@@ -2,178 +2,316 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Snake Game</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
-      margin: 0;
-      padding: 0;
-      background: #0d1117;
+      background: #0a0a0f;
       color: #f8fafc;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
+      height: 100%;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .game-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100%;
+      padding: 12px;
+      gap: 12px;
+    }
+
+    /* Header */
+    .game-header {
+      text-align: center;
+    }
+
+    .game-header h1 {
+      font-size: 1.1rem;
+      color: #facc15;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .score-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #22d3ee;
+      text-shadow: 0 0 12px rgba(34,211,238,0.4);
+    }
+
+    /* Canvas */
+    .canvas-container {
+      position: relative;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      box-shadow:
+        0 0 20px rgba(245,158,11,0.15),
+        inset 0 0 30px rgba(0,0,0,0.5);
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
     canvas {
+      display: block;
       background: #111827;
-      border: 2px solid #f59e0b;
     }
 
-    h1 {
-      margin: 10px 0;
-      font-size: 1.2rem;
+    /* Game Over Overlay */
+    .game-over-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(4px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .game-over-overlay.active {
+      display: flex;
+    }
+
+    .game-over-overlay h2 {
+      font-size: 1.6rem;
+      color: #ef4444;
+      text-shadow: 0 0 20px rgba(239,68,68,0.5);
+      letter-spacing: 2px;
+    }
+
+    .game-over-overlay .final-score {
+      font-size: 1.1rem;
       color: #facc15;
     }
 
-    #score {
-      margin-bottom: 10px;
-      font-size: 1rem;
-      color: #38bdf8;
+    .restart-btn {
+      padding: 10px 28px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #111;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 15px rgba(245,158,11,0.3);
     }
 
-    #restartBtn {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #f59e0b;
-      color: #111;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: none;
+    .restart-btn:active {
+      transform: scale(0.95);
     }
 
     /* D-Pad */
-    .dpad {
+    .dpad-container {
       display: none;
-      margin-top: 20px;
+      flex-shrink: 0;
+    }
+
+    .dpad {
       position: relative;
-      width: 160px;
-      height: 160px;
+      width: 180px;
+      height: 180px;
     }
 
     .dpad-btn {
       position: absolute;
-      width: 52px;
-      height: 52px;
-      background: #1e293b;
-      border: 2px solid #f59e0b;
-      border-radius: 12px;
-      color: #facc15;
-      font-size: 1.4rem;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border: 2px solid rgba(245, 158, 11, 0.4);
+      border-radius: 14px;
+      color: #f59e0b;
+      font-size: 1.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
       touch-action: manipulation;
-      transition: background 0.15s, transform 0.1s;
+      transition: all 0.12s ease;
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
-    .dpad-btn:active {
-      background: #f59e0b;
+    .dpad-btn:active, .dpad-btn.pressed {
+      background: linear-gradient(145deg, #f59e0b, #d97706);
       color: #111;
-      transform: scale(0.92);
+      border-color: #facc15;
+      transform: scale(0.9);
+      box-shadow:
+        0 0 20px rgba(245,158,11,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.1);
     }
 
-    .dpad-up    { top: 0;    left: 50%;  transform: translateX(-50%); }
-    .dpad-down  { bottom: 0; left: 50%;  transform: translateX(-50%); }
-    .dpad-left  { left: 0;   top: 50%;   transform: translateY(-50%); }
-    .dpad-right { right: 0;  top: 50%;   transform: translateY(-50%); }
+    .dpad-up {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .dpad-down {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .dpad-left {
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .dpad-right {
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
-    .dpad-up:active    { transform: translateX(-50%) scale(0.92); }
-    .dpad-down:active  { transform: translateX(-50%) scale(0.92); }
-    .dpad-left:active  { transform: translateY(-50%) scale(0.92); }
-    .dpad-right:active { transform: translateY(-50%) scale(0.92); }
+    .dpad-up:active, .dpad-up.pressed       { transform: translateX(-50%) scale(0.9); }
+    .dpad-down:active, .dpad-down.pressed    { transform: translateX(-50%) scale(0.9); }
+    .dpad-left:active, .dpad-left.pressed    { transform: translateY(-50%) scale(0.9); }
+    .dpad-right:active, .dpad-right.pressed  { transform: translateY(-50%) scale(0.9); }
 
     .dpad-center {
       position: absolute;
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      width: 28px;
-      height: 28px;
-      background: #f59e0b33;
+      width: 40px;
+      height: 40px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.15);
       border-radius: 50%;
     }
 
+    /* Desktop hint */
+    .keyboard-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
     @media (max-width: 767px) {
-      .dpad { display: block; }
-      h1 { font-size: 1rem; }
+      .dpad-container { display: flex; align-items: center; justify-content: center; }
+      .keyboard-hint { display: none; }
+    }
+
+    @media (max-width: 380px) {
+      .dpad { width: 150px; height: 150px; }
+      .dpad-btn { width: 48px; height: 48px; font-size: 1.1rem; border-radius: 12px; }
     }
   </style>
 </head>
 <body>
-  <h1>🐍 Use as setas para jogar</h1>
-  <div id="score">Pontos: 0</div>
-<canvas id="game"></canvas>
+  <div class="game-wrapper">
+    <!-- Header -->
+    <div class="game-header">
+      <h1>🐍 Snake Game</h1>
+      <div class="score-display" id="score">0</div>
+    </div>
 
-<style>
-  canvas {
-    width: 300px;
-    height: 300px;
-    touch-action: none;
-  }
+    <!-- Canvas -->
+    <div class="canvas-container" id="canvasContainer">
+      <canvas id="game"></canvas>
+      <div class="game-over-overlay" id="gameOverOverlay">
+        <h2>GAME OVER</h2>
+        <div class="final-score" id="finalScore">Pontos: 0</div>
+        <button class="restart-btn" id="restartBtn">▶ REINICIAR</button>
+      </div>
+    </div>
 
-  @media (min-width: 768px) {
-    canvas {
-      width: 500px;
-      height: 500px;
-    }
-  }
-</style>
-  <button id="restartBtn" onclick="restartGame()">Reiniciar</button>
+    <!-- D-Pad (mobile only) -->
+    <div class="dpad-container">
+      <div class="dpad">
+        <div class="dpad-btn dpad-up"    id="btn-up">▲</div>
+        <div class="dpad-btn dpad-left"  id="btn-left">◀</div>
+        <div class="dpad-center"></div>
+        <div class="dpad-btn dpad-right" id="btn-right">▶</div>
+        <div class="dpad-btn dpad-down"  id="btn-down">▼</div>
+      </div>
+    </div>
 
-  <!-- D-Pad mobile -->
-  <div class="dpad" id="dpad">
-    <div class="dpad-btn dpad-up"    id="btn-up">▲</div>
-    <div class="dpad-btn dpad-left"  id="btn-left">◀</div>
-    <div class="dpad-center"></div>
-    <div class="dpad-btn dpad-right" id="btn-right">▶</div>
-    <div class="dpad-btn dpad-down"  id="btn-down">▼</div>
+    <!-- Desktop hint -->
+    <div class="keyboard-hint">Use as setas do teclado ↑ ↓ ← →</div>
   </div>
 
   <script>
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
     const scoreEl = document.getElementById("score");
+    const overlay = document.getElementById("gameOverOverlay");
+    const finalScoreEl = document.getElementById("finalScore");
     const restartBtn = document.getElementById("restartBtn");
+    const container = document.getElementById("canvasContainer");
 
     const grid = 15;
-    let snake;
-    let apple;
-    let count = 0;
-    let speed = 10;
-    let score = 0;
-    let gameOver = false;
+    let snake, apple, count, speed, score, gameOver;
 
+    // --- Responsive canvas sizing ---
+    function getCanvasSize() {
+      const maxW = window.innerWidth - 32;
+      const maxH = window.innerHeight * 0.52;
+      let size = Math.min(maxW, maxH, 500);
+      size = Math.floor(size / grid) * grid; // snap to grid
+      return size;
+    }
+
+    function resizeCanvas() {
+      const size = getCanvasSize();
+      canvas.width = size;
+      canvas.height = size;
+      canvas.style.width = size + "px";
+      canvas.style.height = size + "px";
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+
+    // --- Game logic ---
     function resetGame() {
+      resizeCanvas();
+      const cols = Math.floor(canvas.width / grid);
+      const rows = Math.floor(canvas.height / grid);
+
       snake = {
-        x: 150,
-        y: 150,
+        x: Math.floor(cols / 2) * grid,
+        y: Math.floor(rows / 2) * grid,
         dx: grid,
         dy: 0,
         cells: [],
         maxCells: 4
       };
       apple = {
-        x: getRandomInt(0, 20) * grid,
-        y: getRandomInt(0, 20) * grid
+        x: getRandomInt(0, cols) * grid,
+        y: getRandomInt(0, rows) * grid
       };
       score = 0;
       speed = 10;
       gameOver = false;
       count = 0;
-      scoreEl.innerText = "Pontos: 0";
-      restartBtn.style.display = "none";
+      scoreEl.innerText = "0";
+      overlay.classList.remove("active");
     }
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function endGame() {
+      gameOver = true;
+      finalScoreEl.innerText = `Pontos: ${score}`;
+      overlay.classList.add("active");
     }
 
     function loop() {
@@ -182,60 +320,80 @@
 
       if (++count < speed) return;
       count = 0;
-      const canvasSize = Math.floor(Math.min(canvas.clientWidth, canvas.clientHeight));
-      canvas.width = canvasSize;
-      canvas.height = canvasSize;
-    ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw grid lines (subtle)
+      ctx.strokeStyle = "rgba(255,255,255,0.03)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= canvas.width; x += grid) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += grid) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
 
       snake.x += snake.dx;
       snake.y += snake.dy;
 
-      // Bateu na parede
+      // Wall collision
       if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) {
-        gameOver = true;
-        restartBtn.style.display = "block";
+        endGame();
         return;
       }
 
       snake.cells.unshift({ x: snake.x, y: snake.y });
-      if (snake.cells.length > snake.maxCells) {
-        snake.cells.pop();
-      }
+      if (snake.cells.length > snake.maxCells) snake.cells.pop();
 
+      // Draw apple with glow
+      ctx.shadowColor = "#f59e0b";
+      ctx.shadowBlur = 10;
       ctx.fillStyle = "#f59e0b";
-      ctx.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+      ctx.beginPath();
+      ctx.roundRect(apple.x + 1, apple.y + 1, grid - 2, grid - 2, 3);
+      ctx.fill();
+      ctx.shadowBlur = 0;
 
-      ctx.fillStyle = "#22d3ee";
+      // Draw snake
       snake.cells.forEach((cell, index) => {
-        ctx.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+        const isHead = index === 0;
+        if (isHead) {
+          ctx.shadowColor = "#22d3ee";
+          ctx.shadowBlur = 8;
+          ctx.fillStyle = "#22d3ee";
+        } else {
+          ctx.shadowBlur = 0;
+          const alpha = 1 - (index / snake.cells.length) * 0.5;
+          ctx.fillStyle = `rgba(34,211,238,${alpha})`;
+        }
+        ctx.beginPath();
+        ctx.roundRect(cell.x + 1, cell.y + 1, grid - 2, grid - 2, isHead ? 4 : 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
 
-        // Comeu a maçã
+        // Apple collision
         if (cell.x === apple.x && cell.y === apple.y) {
           snake.maxCells++;
           score++;
-          scoreEl.innerText = `Pontos: ${score}`;
-          apple.x = getRandomInt(0, 20) * grid;
-          apple.y = getRandomInt(0, 20) * grid;
-          if (speed > 2) speed -= 0.5; // aumenta velocidade
+          scoreEl.innerText = score;
+          const cols = Math.floor(canvas.width / grid);
+          const rows = Math.floor(canvas.height / grid);
+          apple.x = getRandomInt(0, cols) * grid;
+          apple.y = getRandomInt(0, rows) * grid;
+          if (speed > 3) speed -= 0.4;
         }
 
-        // Colidiu com si mesmo
+        // Self collision
         for (let i = index + 1; i < snake.cells.length; i++) {
           if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-            gameOver = true;
-            restartBtn.style.display = "block";
+            endGame();
             return;
           }
         }
       });
     }
 
-    function restartGame() {
-      resetGame();
-      requestAnimationFrame(loop);
-    }
-
-    // --- Direção helper ---
+    // --- Direction helper ---
     function setDirection(dir) {
       if (dir === 'left'  && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
       if (dir === 'up'    && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
@@ -243,8 +401,9 @@
       if (dir === 'down'  && snake.dy === 0) { snake.dy = grid;  snake.dx = 0; }
     }
 
-    // --- Keyboard ---
+    // --- Keyboard controls ---
     document.addEventListener("keydown", function (e) {
+      if (["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"].includes(e.key)) e.preventDefault();
       if (e.key === "ArrowLeft")  setDirection('left');
       if (e.key === "ArrowUp")    setDirection('up');
       if (e.key === "ArrowRight") setDirection('right');
@@ -252,31 +411,35 @@
     });
 
     // --- D-Pad buttons ---
-    document.getElementById("btn-up").addEventListener("touchstart",    (e) => { e.preventDefault(); setDirection('up');    }, { passive: false });
-    document.getElementById("btn-down").addEventListener("touchstart",  (e) => { e.preventDefault(); setDirection('down');  }, { passive: false });
-    document.getElementById("btn-left").addEventListener("touchstart",  (e) => { e.preventDefault(); setDirection('left');  }, { passive: false });
-    document.getElementById("btn-right").addEventListener("touchstart", (e) => { e.preventDefault(); setDirection('right'); }, { passive: false });
+    const dpadMap = { "btn-up": "up", "btn-down": "down", "btn-left": "left", "btn-right": "right" };
+
+    Object.entries(dpadMap).forEach(([id, dir]) => {
+      const btn = document.getElementById(id);
+      btn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        btn.classList.add("pressed");
+        setDirection(dir);
+      }, { passive: false });
+      btn.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        btn.classList.remove("pressed");
+      }, { passive: false });
+    });
 
     // --- Swipe on canvas ---
-    let touchStartX = 0;
-    let touchStartY = 0;
+    let touchStartX = 0, touchStartY = 0;
 
     canvas.addEventListener("touchstart", function (e) {
       e.preventDefault();
-      const touch = e.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
     }, { passive: false });
 
     canvas.addEventListener("touchend", function (e) {
       e.preventDefault();
-      const touch = e.changedTouches[0];
-      const dx = touch.clientX - touchStartX;
-      const dy = touch.clientY - touchStartY;
-
-      // Minimum swipe distance of 20px
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
       if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
-
       if (Math.abs(dx) > Math.abs(dy)) {
         setDirection(dx > 0 ? 'right' : 'left');
       } else {
@@ -284,6 +447,11 @@
       }
     }, { passive: false });
 
+    // --- Restart ---
+    restartBtn.addEventListener("click", () => { resetGame(); requestAnimationFrame(loop); });
+    restartBtn.addEventListener("touchend", (e) => { e.preventDefault(); resetGame(); requestAnimationFrame(loop); });
+
+    // --- Start ---
     resetGame();
     requestAnimationFrame(loop);
   </script>
